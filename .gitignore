@@ -1,0 +1,6 @@
+create_minio_user
+*.log
+*.tmp
+*.txt
+*.swp
+env.sh
