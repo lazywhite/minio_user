@@ -26,7 +26,7 @@ ${MC} config host add ${ADMIN} ${ENDPOINT} "${ACCESS_KEY}" "${SECRET_KEY}" --api
 PASSWD=$(openssl rand -hex 18)
 # ${MC} admin user add ${ADMIN} ${USER} ${PASSWD} ${POLICY}
 #python3 /create.py ${USER} ${PASSWD} ${POLICY}
-/usr/local/bin/create_minio_user -u ${USER} -p ${PASSWD} -g ${MINIO_GROUP}
+/usr/local/bin/minio_user -a add -u ${USER} -p ${PASSWD} -g ${MINIO_GROUP}
 # echo "${MC} config host add ${USER} ${ENDPOINT} ${USER} ${PASSWD} --api s3v4"
 ${MC} config host add ${USER} ${ENDPOINT} ${USER} ${PASSWD} --api s3v4
 for i in gcs local play s3 ${ADMIN}; do ${MC} config host rm "${i}"; done

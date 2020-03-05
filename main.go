@@ -24,6 +24,7 @@ import (
 )
 
 var (
+    action string
     username string
     password string
     group string
@@ -102,8 +103,8 @@ func createMinioUser(token string, username string, password string, group strin
 
 
 func usage() {
-    fmt.Fprintf(os.Stderr, `create minio user
-Usage: create_minio_user [-h] [-u user] [-p password] [-g group]
+    fmt.Fprintf(os.Stderr, `manage minio user
+Usage: minio_user [-h] [-a] [-u user] [-p password] [-g group]
 
 Options:
 `)
@@ -111,6 +112,7 @@ Options:
 }
 
 func init(){
+    flag.StringVar(&action, "a", "", "add/update/delete minio user")
     flag.StringVar(&username, "u", "", "user name")
     flag.StringVar(&password, "p", "", "password")
     flag.StringVar(&group, "g", "", "user group")
@@ -131,11 +133,14 @@ func main() {
         os.Exit(2)
     }
     //fmt.Println(token)
-    err = createMinioUser(token, username, password, group)
-    if err != nil{
-        fmt.Println(err.Error())
-        os.Exit(3)
-    }else{
-        fmt.Println("success to create minio user")
+    if action == "add"{
+        err = createMinioUser(token, username, password, group)
+        if err != nil{
+            fmt.Println(err.Error())
+            os.Exit(3)
+        }else{
+            fmt.Println("success to create minio user")
+        }
+
     }
 }

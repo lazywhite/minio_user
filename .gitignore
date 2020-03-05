@@ -1,4 +1,4 @@
-create_minio_user
+minio_user
 *.log
 *.tmp
 *.txt

@@ -1,4 +1,4 @@
-module create_minio_user
+module minio_user
 
 go 1.13
 
