@@ -36,27 +36,26 @@ type PostResult struct{
 }
 
 func getUserToken(user string, pwd string) (string, error){
-    //realm := os.Getenv("REALM_NAME")
+    realm := os.Getenv("REALM_NAME")
     serverURL := os.Getenv("SERVER_URL")
-    //clientID := os.Getenv("CLIENT_ID")
-    //clientSecretEncoded := os.Getenv("CLIENT_SECRET_KEY")
+    clientID := os.Getenv("CLIENT_ID")
+    clientSecretEncoded := os.Getenv("CLIENT_SECRET_KEY")
 
-    /*
+
     clientSecret, err := base64.StdEncoding.DecodeString(clientSecretEncoded)
     if err != nil{
-        return nil, errors.New("decode CLIENT_SECRET_KEY  error")
+        return string(""), errors.New("decode CLIENT_SECRET_KEY  error")
     }
-    */
+
     client := gocloak.NewClient(serverURL)
     restyClient := client.RestyClient()
     //restyClient.SetDebug(true)
     restyClient.SetTLSClientConfig(&tls.Config{ InsecureSkipVerify: true })
 
+    token, err := client.Login(clientID, string(clientSecret), realm, user, pwd)
+
     /*
-    jwt, err := client.Login(clientID, string(clientSecret), realm, user, pwd)
-    fmt.Println(jwt)
-    fmt.Println(err.Error())
-    jwt, err = client.LoginClient(clientID, string(clientSecret), realm)
+    jwt, err := client.LoginClient(clientID, string(clientSecret), realm)
     fmt.Println(jwt)
     fmt.Println(err.Error())
     jwt, err := client.LoginAdmin(user, pwd, realm)
@@ -64,7 +63,7 @@ func getUserToken(user string, pwd string) (string, error){
     fmt.Println(err)
     jwt.access_token
     */
-    return "fake token", nil
+    return token.AccessToken, err
 }
 // 2. create user
 
@@ -83,7 +82,7 @@ func createMinioUser(token string, username string, password string, group strin
                 SetHeader("Authorization", token).
                 SetBody(data).
                 Post(apiURL)
-    if err == nil && resp.StatusCode() == 200{
+    if err == nil && resp.StatusCode() == 201{
         var result PostResult
         err := json.Unmarshal(resp.Body(), &result)
         if err != nil{
@@ -96,6 +95,7 @@ func createMinioUser(token string, username string, password string, group strin
             }
         }
     }else{
+        fmt.Sprintf("create minio user request error: %s", err)
         return errors.New("create minio user request error")
     }
 
